@@ -9,8 +9,8 @@ CORE_EMU_DIR := $(MEDNAFEN_DIR)/psx
 RSXGL_DIR    := $(CORE_DIR)/rustation-libretro/src
 CDROM_DIR    := $(MEDNAFEN_DIR)/cdrom
 
-ifeq ($(HAVE_OPENGL), 1)
-   ifeq ($(GLES), 1)
+ifeq ($(HAVE_OPENGL),1)
+   ifeq ($(GLES),1)
       GLFLAGS  := -DHAVE_OPENGLES -DHAVE_OPENGLES2
       CFLAGS   += $(GLFLAGS)
       CXXFLAGS += $(GLFLAGS)
@@ -69,24 +69,24 @@ endif
 
 FLAGS += -DHAVE_PBP
 
-ifeq ($(DEBUG), 1)
+ifeq ($(DEBUG),1)
    SOURCES_CXX += $(CORE_EMU_DIR)/dis.cpp
 endif
 
-ifeq ($(NEED_THREADING), 1)
+ifeq ($(NEED_THREADING),1)
    FLAGS += -DWANT_THREADING -DHAVE_THREADS
 endif
 
-ifeq ($(NEED_CRC32), 1)
+ifeq ($(NEED_CRC32),1)
    FLAGS += -DWANT_CRC32
    SOURCES_C += $(CORE_DIR)/scrc32.c
 endif
 
-ifeq ($(NEED_DEINTERLACER), 1)
+ifeq ($(NEED_DEINTERLACER),1)
    FLAGS += -DNEED_DEINTERLACER
 endif
 
-ifeq ($(IS_X86), 1)
+ifeq ($(IS_X86),1)
    FLAGS += -DARCH_X86
 endif
 
@@ -102,23 +102,23 @@ ifeq ($(NEED_BPP), 32)
    FLAGS += -DWANT_32BPP
 endif
 
-ifeq ($(WANT_NEW_API), 1)
+ifeq ($(WANT_NEW_API),1)
    FLAGS += -DWANT_NEW_API
 endif
 
-ifeq ($(NO_COMPUTED_GOTO), 1)
+ifeq ($(NO_COMPUTED_GOTO),1)
    FLAGS += -DNO_COMPUTED_GOTO
 endif
 
-ifeq ($(FRONTEND_SUPPORTS_RGB565), 1)
+ifeq ($(FRONTEND_SUPPORTS_RGB565),1)
    FLAGS += -DFRONTEND_SUPPORTS_RGB565
 endif
 
-ifeq ($(NEED_CD), 1)
+ifeq ($(NEED_CD),1)
    FLAGS += -DNEED_CD
 endif
 
-ifeq ($(HAVE_CHD), 1)
+ifeq ($(HAVE_CHD),1)
    FLAGS += -DHAVE_CHD \
             -D_7ZIP_ST \
             -DPACKAGE_VERSION=\"1.3.2\" \
@@ -140,11 +140,11 @@ ifeq ($(HAVE_CHD), 1)
    endif
 endif
 
-ifeq ($(NEED_TREMOR), 1)
+ifeq ($(NEED_TREMOR),1)
    FLAGS += -DNEED_TREMOR
 endif
 
-ifneq ($(HAVE_GRIFFIN), 1)
+ifneq ($(HAVE_GRIFFIN),1)
    SOURCES_CXX += $(CORE_EMU_DIR)/irq.cpp \
                   $(CORE_EMU_DIR)/timer.cpp \
                   $(CORE_EMU_DIR)/dma.cpp \
@@ -166,14 +166,30 @@ ifneq ($(HAVE_GRIFFIN), 1)
                   $(CORE_EMU_DIR)/input/multitap.cpp \
                   $(CORE_EMU_DIR)/input/mouse.cpp
 
-   ifeq ($(HAVE_JIT), 1)
+   ifeq ($(HAVE_JIT),1)
       SOURCES_CXX += $(CORE_EMU_DIR)/decomp.cpp
    endif
 
    SOURCES_C += $(CORE_DIR)/libretro_cbs.c
 
-   ifeq ($(NEED_TREMOR), 1)
-      SOURCES_C += $(sort $(wildcard $(MEDNAFEN_DIR)/tremor/*.c))
+   ifeq ($(NEED_TREMOR),1)
+      SOURCES_C += \
+		  $(MEDNAFEN_DIR)/tremor/bitwise.c \
+		  $(MEDNAFEN_DIR)/tremor/block.c \
+		  $(MEDNAFEN_DIR)/tremor/codebook.c \
+		  $(MEDNAFEN_DIR)/tremor/floor0.c \
+		  $(MEDNAFEN_DIR)/tremor/floor1.c \
+		  $(MEDNAFEN_DIR)/tremor/framing.c \
+		  $(MEDNAFEN_DIR)/tremor/info.c \
+		  $(MEDNAFEN_DIR)/tremor/mapping0.c \
+		  $(MEDNAFEN_DIR)/tremor/mdct.c \
+		  $(MEDNAFEN_DIR)/tremor/registry.c \
+		  $(MEDNAFEN_DIR)/tremor/res012.c \
+		  $(MEDNAFEN_DIR)/tremor/sharedbook.c \
+		  $(MEDNAFEN_DIR)/tremor/synthesis.c \
+		  $(MEDNAFEN_DIR)/tremor/vorbisfile.c \
+		  $(MEDNAFEN_DIR)/tremor/window.c \
+
    endif
 
    SOURCES_CXX += $(CDROM_DIR)/CDAccess.cpp \
@@ -214,7 +230,7 @@ ifneq ($(HAVE_GRIFFIN), 1)
       CXXFLAGS    += -DRSX_DUMP
    endif
 
-   ifeq ($(HAVE_VULKAN), 1)
+   ifeq ($(HAVE_VULKAN),1)
       SOURCES_CXX += $(wildcard $(CORE_DIR)/parallel-psx/renderer/*.cpp) \
                      $(wildcard $(CORE_DIR)/parallel-psx/atlas/*.cpp) \
                      $(wildcard $(CORE_DIR)/parallel-psx/vulkan/*.cpp) \
@@ -238,7 +254,7 @@ ifneq ($(HAVE_GRIFFIN), 1)
       endif
    endif
 
-   ifneq ($(STATIC_LINKING), 1)
+   ifneq ($(STATIC_LINKING),1)
       SOURCES_C +=   $(LIBRETRO_DIR)/streams/file_stream.c \
                      $(LIBRETRO_DIR)/streams/file_stream_transforms.c \
                      $(LIBRETRO_DIR)/file/file_path.c \
@@ -255,24 +271,25 @@ ifneq ($(HAVE_GRIFFIN), 1)
                      $(LIBRETRO_DIR)/memmap/memalign.c \
                      $(LIBRETRO_DIR)/hash/rhash.c
 
-      ifeq ($(HAVE_CDROM), 1)
+      ifeq ($(HAVE_CDROM),1)
 				 CFLAGS += -DHAVE_CDROM
 				 CXXFLAGS += -DHAVE_CDROM
          SOURCES_C += $(LIBRETRO_DIR)/cdrom/cdrom.c \
          							$(LIBRETRO_DIR)/vfs/vfs_implementation_cdrom.c
 
-         ifeq ($(CDROM_DEBUG), 1)
+         ifeq ($(CDROM_DEBUG),1)
 				    CFLAGS += -DCDROM_DEBUG
 				    CXXFLAGS += -DCDROM_DEBUG
 				 endif
       endif
 
-      ifeq ($(NEED_THREADING), 1)
+      ifeq ($(NEED_THREADING),1)
          SOURCES_C += $(LIBRETRO_DIR)/rthreads/rthreads.c
       endif
 
    endif
-endif ## ifneq($(HAVE_GRIFFIN, 1))
+endif
+##### ($(HAVE_GRIFFIN),1)
 
 SOURCES_C +=   $(LIBKIRK_DIR)/aes.c \
                $(LIBKIRK_DIR)/amctrl.c \
@@ -290,7 +307,7 @@ SOURCES_C +=   $(CORE_DIR)/pgxp/pgxp_cpu.c \
                $(CORE_DIR)/pgxp/pgxp_mem.c \
                $(CORE_DIR)/pgxp/pgxp_value.c
 
-ifeq ($(HAVE_CHD), 1)
+ifeq ($(HAVE_CHD),1)
    SOURCES_C +=   $(DEPS_DIR)/crypto/md5.c \
                   $(DEPS_DIR)/crypto/sha1.c \
                   $(DEPS_DIR)/flac-1.3.2/src/libFLAC/bitmath.c \
@@ -332,9 +349,6 @@ ifeq ($(HAVE_CHD), 1)
                   $(DEPS_DIR)/libchdr/flac.c \
                   $(DEPS_DIR)/libchdr/huffman.c 
 
-   ifneq (,$(findstring win,$(platform)))
-       SOURCES_C += $(DEPS_DIR)/flac-1.3.2/src/libFLAC/windows_unicode_filenames.c
-   endif
-
    SOURCES_CXX += $(CDROM_DIR)/CDAccess_CHD.cpp
-endif ## ifeq ($(HAVE_CHD), 1)
+endif
+##### ($(HAVE_CHD),1)

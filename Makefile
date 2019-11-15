@@ -474,6 +474,12 @@ endif
 
 include Makefile.common
 
+ifeq ($(HAVE_CHD),1)
+  ifneq (,$(findstring win,$(platform)))
+       SOURCES_C += $(DEPS_DIR)/flac-1.3.2/src/libFLAC/windows_unicode_filenames.c
+   endif
+endif
+
 # https://github.com/libretro-mirrors/mednafen-git/blob/master/README.PORTING
 MEDNAFEN_GCC_FLAGS = -fwrapv \
                      -fsigned-char
